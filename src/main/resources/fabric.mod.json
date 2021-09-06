@@ -1,38 +1,46 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "fashion",
   "version": "${version}",
-
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Fashion Mod",
+  "description": "Have some fashion on your player !\nPop in de wardrobe and pick from any base items provided, or make your own resource pack and enjoy being\nF A B U L O U S",
   "authors": [
-    "Me!"
+    "Subaraki",
+    "StrikerRocker"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/just-fashion",
+    "sources": "github.com/StrikerRockers-Mods/JustFashion-Fabric/"
   },
-
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
-
+  "license": "GNU V3",
+  "icon": "assets/fashion/logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "subaraki.fashion.mod.Fashion"
+    ],
+    "client": [
+      "subaraki.fashion.mod.FashionClient"
+    ],
+    "cardinal-components": [
+      "subaraki.fashion.mod.Fashion"
     ]
   },
   "mixins": [
     "modid.mixins.json"
   ],
-
+  "custom": {
+    "cardinal-components": [
+      "fashion:fashion"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",
     "minecraft": "1.17.x",
-    "java": ">=16"
+    "java": ">=16",
+    "cardinal-components-base": ">=3.0.0-0",
+    "cardinal-components-entity": ">=3.0.0-0"
   },
-  "suggests": {
-    "another-mod": "*"
-  }
+  "accessWidener": "modid.accesswidener"
 }

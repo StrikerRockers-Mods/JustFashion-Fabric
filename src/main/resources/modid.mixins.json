@@ -1,12 +1,14 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.fabricmc.example.mixin",
+  "package": "subaraki.fashion.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
   ],
   "client": [
-    "ExampleMixin"
+    "EntityRenderDispatcherMixin", "ItemInHandRendererMixin", "LayerDefinitionsMixin", "ModelBakeryMixin",
+    "PlayerRendererMixin", "accessor.EntityRenderDispatcherAccessor", "accessor.LivingEntityRendererAccessor",
+    "accessor.ModelManagerAccessor", "accessor.ScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
