@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import org.lwjgl.glfw.GLFW;
 import subaraki.fashion.capability.FashionData;
 import subaraki.fashion.event.RenderInHandCallback;
+import subaraki.fashion.network.ServerBoundPackets;
 import subaraki.fashion.render.EnumFashionSlot;
 import subaraki.fashion.render.FashionModels;
 import subaraki.fashion.screen.WardrobeScreen;
@@ -39,6 +40,7 @@ public class FashionClient implements ClientModInitializer {
             while (FashionClient.keyWardrobe.consumeClick()) {
                 FashionData.get(Minecraft.getInstance().player).setInWardrobe(true);
                 Minecraft.getInstance().setScreen(new WardrobeScreen());
+                ServerBoundPackets.syncInWardrobe(true);
             }
         });
         RenderInHandCallback.EVENT.register((hand, poseStack, buffers, light, partialTicks, interpPitch, swingProgress, equipProgress, stack) -> {

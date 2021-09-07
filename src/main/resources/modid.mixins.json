@@ -6,9 +6,9 @@
   "mixins": [
   ],
   "client": [
-    "EntityRenderDispatcherMixin", "ItemInHandRendererMixin", "LayerDefinitionsMixin", "ModelBakeryMixin",
-    "PlayerRendererMixin", "accessor.EntityRenderDispatcherAccessor", "accessor.LivingEntityRendererAccessor",
-    "accessor.ModelManagerAccessor", "accessor.ScreenAccessor"
+    "EntityRenderDispatcherMixin", "ItemInHandRendererMixin", "LayerDefinitionsMixin", "MinecraftClientMixin",
+    "ModelBakeryMixin", "PlayerRendererMixin", "accessor.EntityRenderDispatcherAccessor",
+    "accessor.LivingEntityRendererAccessor", "accessor.ModelManagerAccessor", "accessor.ScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

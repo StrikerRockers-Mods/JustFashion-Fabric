@@ -16,7 +16,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import subaraki.fashion.capability.FashionData;
-import subaraki.fashion.util.VertexConsumerUtil;
+import subaraki.fashion.util.RenderUtils;
 
 import java.util.Random;
 
@@ -62,7 +62,7 @@ public class LayerWardrobe extends RenderLayer<AbstractClientPlayer, PlayerModel
 
         VertexConsumer bb = bufferIn.getBuffer(rt);
         for (BakedQuad quad : model.getQuads(null, null, rand)) {
-            VertexConsumerUtil.putBulkData(bb, matrixStackIn.last(), quad, r, g, b, a, packedLightIn, overlay, true);
+            RenderUtils.putBulkData(bb, matrixStackIn.last(), quad, r, g, b, a, packedLightIn, overlay, true);
         }
     }
 }

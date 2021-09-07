@@ -8,15 +8,15 @@ import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import subaraki.fashion.capability.FashionData;
+import subaraki.fashion.event.Events;
+import subaraki.fashion.network.ClientBoundPackets;
+import subaraki.fashion.network.ServerBoundPackets;
 import subaraki.fashion.render.HandleRenderSwap;
 import subaraki.fashion.util.ModConfig;
-import subaraki.fashion.util.ResourcePackReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +34,10 @@ public class Fashion implements ModInitializer, EntityComponentInitializer {
     public void onInitialize() {
         AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
         config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(ResourcePackReader.INSTANCE);
         specialModels.add(new ResourceLocation("fashion:wardrobe"));
+        ClientBoundPackets.register();
+        ServerBoundPackets.register();
+        Events.register();
     }
 
     @Override

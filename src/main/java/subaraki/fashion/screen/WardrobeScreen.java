@@ -24,6 +24,7 @@ import subaraki.fashion.capability.FashionData;
 import subaraki.fashion.mixin.accessor.ScreenAccessor;
 import subaraki.fashion.mod.Fashion;
 import subaraki.fashion.mod.FashionClient;
+import subaraki.fashion.network.ServerBoundPackets;
 import subaraki.fashion.render.EnumFashionSlot;
 import subaraki.fashion.util.ResourcePackReader;
 
@@ -126,7 +127,6 @@ public class WardrobeScreen extends Screen {
     }
 
     private void addSlotButton(EnumFashionSlot slot) {
-
         int offset = 0;
         if (slot.ordinal() > 3)
             offset = 10;
@@ -142,18 +142,12 @@ public class WardrobeScreen extends Screen {
     public void render(PoseStack mat, int mouseX, int mouseY, float partialTicks) {
 
         this.drawGuiContainerBackgroundLayer(mat, partialTicks, mouseX, mouseY);
-
         RenderSystem.disableDepthTest();
         super.render(mat, mouseX, mouseY, partialTicks);
-
         mat.pushPose();
-
         this.drawGuiContainerForegroundLayer(mat, mouseX, mouseY);
-
         mat.popPose();
-
         RenderSystem.enableDepthTest();
-
     }
 
     protected void drawGuiContainerBackgroundLayer(PoseStack mat, float partialTicks, int mouseX, int mouseY) {
@@ -178,9 +172,8 @@ public class WardrobeScreen extends Screen {
 
         mat.pushPose();
         renderEntityInInventory(guiLeft + 33, guiTop + 65 + offsetBigModel, (int) (25f * scale),
-                ((guiLeft + 70 - oldMouseX) / 2.5f) * -flipMouse, guiTop + 40 - oldMouseY, player, rotationMirrorBack, -200f);
+                ((guiLeft + 70 - oldMouseX) / 2.5f) * -flipMouse, guiTop + 40 - oldMouseY, player, rotationMirrorBack, 0);
         mat.popPose();
-
         RenderSystem.enableBlend();
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -201,9 +194,8 @@ public class WardrobeScreen extends Screen {
     }
 
     protected void drawGuiContainerForegroundLayer(PoseStack mat, int mouseX, int mouseY) {
-
         FashionData fashion = FashionData.get(player);
-        int id = 0;
+        int labelId = 0;
         for (EnumFashionSlot slot : EnumFashionSlot.values()) {
             ResourceLocation resLoc = fashion.getRenderingPart(slot);
             String[] s = resLoc.getPath().split("/");
@@ -218,10 +210,10 @@ public class WardrobeScreen extends Screen {
                 name = "N/A";
 
             int offset = 0;
-            if (id > 3)
+            if (labelId > 3)
                 offset = 10;
             minecraft.font.draw(mat, name, guiLeft + 138 - minecraft.font.width(name) / 2,
-                    guiTop + ((id++ + 1) * 15) - 3 + offset, 0xffffff);
+                    guiTop + ((labelId++ + 1) * 15) - 3 + offset, 0xffffff);
         }
 
         String toggled = fashion.shouldRenderFashion() ? "Showing Fashion" : "Showing Armor";
@@ -243,7 +235,7 @@ public class WardrobeScreen extends Screen {
     }
 
     // called whenever a screen is closed, by player or by opening another screen or
-    // trough force (to far away)
+    // through force (to far away)
 
     @Override
     public boolean shouldCloseOnEsc() {
@@ -252,7 +244,9 @@ public class WardrobeScreen extends Screen {
 
     @Override
     public void removed() {
-        FashionData.get(player).setInWardrobe(false);
+        FashionData fashionData = FashionData.get(player);
+        ServerBoundPackets.syncFashionToServer(fashionData);
+        fashionData.setInWardrobe(false);
     }
 
     @Override

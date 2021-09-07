@@ -18,7 +18,7 @@ import java.nio.IntBuffer;
 /**
  * Copied from <@link> https://github.com/MinecraftForge/MinecraftForge/blob/1.17.x/src/main/java/net/minecraftforge/client/extensions/IForgeVertexConsumer.java</@link>
  */
-public class VertexConsumerUtil {
+public class RenderUtils {
     public static void putBulkData(VertexConsumer vertexConsumer, PoseStack.Pose matrixEntry, BakedQuad bakedQuad, float red, float green, float blue, float alpha, int lightmapCoord, int overlayColor, boolean readExistingColor) {
         putBulkData(vertexConsumer, matrixEntry, bakedQuad, new float[]{1.0F, 1.0F, 1.0F, 1.0F}, red, green, blue, alpha, new int[]{lightmapCoord, lightmapCoord, lightmapCoord, lightmapCoord}, overlayColor, readExistingColor);
     }
@@ -94,4 +94,5 @@ public class VertexConsumerUtil {
             generated.transform(normalTransform);
         }
     }
+
 }

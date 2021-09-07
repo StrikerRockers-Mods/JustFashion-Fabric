@@ -28,8 +28,8 @@ import net.minecraft.world.item.*;
 import subaraki.fashion.capability.FashionData;
 import subaraki.fashion.mixin.accessor.ModelManagerAccessor;
 import subaraki.fashion.render.EnumFashionSlot;
+import subaraki.fashion.util.RenderUtils;
 import subaraki.fashion.util.ResourcePackReader;
-import subaraki.fashion.util.VertexConsumerUtil;
 
 import java.util.Random;
 
@@ -147,10 +147,8 @@ public class LayerAestheticHeldItem extends RenderLayer<AbstractClientPlayer, Pl
 
         ModelManager modelManager = Minecraft.getInstance().getModelManager();
         BakedModel modelBuffer = ((ModelManagerAccessor) modelManager).getBakedRegistry().getOrDefault(resLoc, ((ModelManagerAccessor) modelManager).getMissingModel());
-        // TODO BakedModel rotatedModel = ForgeHooksClient.handleCameraTransforms(mat, modelBuffer, cam, flag);
-
+        //TODO fix shield model rotation
         renderModel(modelBuffer, buffer, getRenderType(), mat, packedLightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
-
         mat.popPose();
     }
 
@@ -161,7 +159,6 @@ public class LayerAestheticHeldItem extends RenderLayer<AbstractClientPlayer, Pl
 
     // vanilla rendering
     private void renderHeldItem(LivingEntity ent, ItemStack stack, ItemTransforms.TransformType cam, HumanoidArm hand, PoseStack mat, MultiBufferSource buffer, int packedLightIn) {
-
         if (!stack.isEmpty()) {
             mat.pushPose();
             ((ArmedModel) this.getParentModel()).translateToHand(hand, mat);
@@ -185,7 +182,7 @@ public class LayerAestheticHeldItem extends RenderLayer<AbstractClientPlayer, Pl
 
         VertexConsumer bb = bufferIn.getBuffer(rt);
         for (BakedQuad quad : model.getQuads(null, null, rand)) {
-            VertexConsumerUtil.putBulkData(bb, matrixStackIn.last(), quad, r, g, b, a, packedLightIn, overlay, true);
+            RenderUtils.putBulkData(bb, matrixStackIn.last(), quad, r, g, b, a, packedLightIn, overlay, true);
         }
     }
 

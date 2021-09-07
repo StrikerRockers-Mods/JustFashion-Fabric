@@ -7,7 +7,6 @@ import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import net.minecraft.client.renderer.entity.layers.*;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import subaraki.fashion.mod.Fashion;
@@ -39,20 +38,15 @@ public class FashionData implements ComponentV3, AutoSyncedComponent {
      * List of all fashion layers rendered, independent of original list
      */
     public List<RenderLayer<?, ?>> fashionLayers = Lists.newArrayList();
-    private Player player;
     private boolean renderFashion;
     private boolean inWardrobe;
     private ResourceLocation hatIndex, bodyIndex, legsIndex, bootsIndex, weaponIndex, shieldIndex;
     /**
-     * since  1.17, the player gets a new renderer and new layers on resource reload.
+     * Since  1.17, the player gets a new renderer and new layers on resource reload.
      * this Field allows checking if the previous player renderer is the same as the current.
      * If this not the case, clear all cache so the new player renderer layers can be cached correctly.
      */
     private PlayerRenderer cachedPreviousPlayerRenderer = null;
-
-    public FashionData() {
-
-    }
 
     public static FashionData get(Player player) {
         return Fashion.FASHION_DATA.get(player);
@@ -129,15 +123,12 @@ public class FashionData implements ComponentV3, AutoSyncedComponent {
      * list of all vanilla layers, cached
      */
     public List<RenderLayer<?, ?>> getVanillaLayersList() {
-
         if (!savedLayers.isEmpty())
             return ImmutableList.copyOf(savedLayers.get(VANILLA));
         return Lists.newArrayList();
-
     }
 
     public List<List<RenderLayer<?, ?>>> getSavedLayers() {
-
         return savedLayers;
     }
 
@@ -150,16 +141,15 @@ public class FashionData implements ComponentV3, AutoSyncedComponent {
      * <p>
      * This is basically the anti fashion layers. armor vs fashion. under armor is
      * understood any biped body armor. anything that can be put on the player's
-     * head (pumpkins etc), the deadmouse special layer, held item , the arrows
+     * head (pumpkins etc.), the deadmouse special layer, held item , the arrows
      * stuck in the player the vanilla cape and the elytra as well as the wardrobe
      * that can not be toggled
      */
     public void saveOriginalList(List<RenderLayer<?, ?>> fromPlayerRenderer) {
-
         List<RenderLayer<?, ?>> copyModLayers = Lists.newArrayList();
         List<RenderLayer<?, ?>> copyVanillaLayers = Lists.newArrayList();
 
-        // seperate vanilla layers from mod layers, so mod layers can be toggled
+        // separate vanilla layers from mod layers, so mod layers can be toggled
         for (RenderLayer<?, ?> layer : fromPlayerRenderer) {
             if ((layer instanceof HumanoidArmorLayer) || (layer instanceof ItemInHandLayer) || (layer instanceof LayerWardrobe) || (layer instanceof CustomHeadLayer)
                     || (layer instanceof Deadmau5EarsLayer) || (layer instanceof ArrowLayer) || (layer instanceof CapeLayer) || (layer instanceof ElytraLayer)
@@ -170,7 +160,6 @@ public class FashionData implements ComponentV3, AutoSyncedComponent {
 
             copyModLayers.add(layer);
         }
-
         savedLayers.clear();
         for (int i = 0; i < 2; i++)
             savedLayers.add(Lists.newArrayList());
@@ -178,19 +167,116 @@ public class FashionData implements ComponentV3, AutoSyncedComponent {
         savedLayers.get(MOD).addAll(copyModLayers);
     }
 
-    public Player getPlayer() {
-
-        return player;
+    /**
+     * Switch on whether to render fashion
+     */
+    public boolean shouldRenderFashion() {
+        return renderFashion;
     }
 
-    public void setPlayer(Player newPlayer) {
-
-        this.player = newPlayer;
+    public void setRenderFashion(boolean renderFashion) {
+        this.renderFashion = renderFashion;
     }
 
-    public void writeData(CompoundTag tag) {
+    /**
+     * Inverts the shouldRenderFashion boolean
+     */
+    public void toggleRenderFashion() {
+        this.renderFashion = !renderFashion;
+    }
+
+    /**
+     * Returns the index at which the player renders fashion at the given moment for
+     * the given fashion slot enum
+     */
+    public ResourceLocation getRenderingPart(EnumFashionSlot slot) {
+        // try and get the first value of the needed list.
+        // when using missing fashion as a default, it will not find it on first
+        // iteration when opening a new world,
+        // and you need to press twice to start cycling the fashion
+        ResourceLocation DEFAULT = MISSING_FASHION;
+
+        if (!ResourcePackReader.getListForSlot(slot).isEmpty())
+            if (ResourcePackReader.getListForSlot(slot).get(0) != null)
+                DEFAULT = ResourcePackReader.getListForSlot(slot).get(0);
+
+        // when a resource location is null, it has its name set to minecraft:missing in
+        // packets. We resolve that here, and transform null / missing to default
+        boolean flag = getAllRenderedParts()[slot.ordinal()] != null && getAllRenderedParts()[slot.ordinal()].toString().contains("missing");
+
+
+        return switch (slot) {
+            case HEAD -> hatIndex != null && !flag ? hatIndex : DEFAULT;
+            case CHEST -> bodyIndex != null && !flag ? bodyIndex : DEFAULT;
+            case LEGS -> legsIndex != null && !flag ? legsIndex : DEFAULT;
+            case BOOTS -> bootsIndex != null && !flag ? bootsIndex : DEFAULT;
+            case WEAPON -> weaponIndex != null && !flag ? weaponIndex : DEFAULT;
+            case SHIELD -> shieldIndex != null && !flag ? shieldIndex : DEFAULT;
+        };
+    }
+
+    /**
+     * Returns the index for all fashion parts currently rendered on the player.
+     * This is mainly used in saving data and passing data trough packets
+     */
+    public ResourceLocation[] getAllRenderedParts() {
+        return new ResourceLocation[]{hatIndex, bodyIndex, legsIndex, bootsIndex, weaponIndex, shieldIndex};
+    }
+
+    /**
+     * Change the index for the given fashion slot to a new index
+     */
+    public void updateFashionSlot(ResourceLocation partName, EnumFashionSlot slot) {
+        switch (slot) {
+            case HEAD -> hatIndex = partName;
+            case CHEST -> bodyIndex = partName;
+            case LEGS -> legsIndex = partName;
+            case BOOTS -> bootsIndex = partName;
+            case WEAPON -> weaponIndex = partName;
+            case SHIELD -> shieldIndex = partName;
+        }
+    }
+
+    /**
+     * Whether the player should be rendered with the wardrobe layer or not
+     */
+    public boolean isInWardrobe() {
+        return inWardrobe;
+    }
+
+    /**
+     * Set whether the player should be rendered in the wardrobe
+     */
+    public void setInWardrobe(boolean inWardrobe) {
+        this.inWardrobe = inWardrobe;
+    }
+
+    @Override
+    public void readFromNbt(CompoundTag tag) {
+        renderFashion = tag.getBoolean("renderFashion");
+        hatIndex = new ResourceLocation(tag.getString("hat"));
+        bodyIndex = new ResourceLocation(tag.getString("body"));
+        legsIndex = new ResourceLocation(tag.getString("legs"));
+        bootsIndex = new ResourceLocation(tag.getString("boots"));
+        weaponIndex = new ResourceLocation(tag.getString("weapon"));
+        shieldIndex = new ResourceLocation(tag.getString("shield"));
+
+        keepLayersNames.clear();
+
+        if (tag.contains("size")) {
+            int size = tag.getInt("size");
+            for (int i = 0; i < size; i++) {
+                String name = tag.getString("keep_" + i);
+
+                keepLayersNames.add(name);
+                Fashion.log.debug(name + " got loaded as active");
+            }
+        }
+    }
+
+    @Override
+    public void writeToNbt(CompoundTag tag) {
         tag.putBoolean("renderFashion", renderFashion);
-
         if (hatIndex == null)
             hatIndex = getRenderingPart(EnumFashionSlot.HEAD);
         tag.putString("hat", hatIndex.toString());
@@ -222,131 +308,5 @@ public class FashionData implements ComponentV3, AutoSyncedComponent {
                 Fashion.log.debug("added a layer to save : " + keepLayersNames.get(i) + " " + i);
             }
         }
-    }
-
-    public void readData(Tag nbt) {
-
-        CompoundTag tag = ((CompoundTag) nbt);
-
-        renderFashion = tag.getBoolean("renderFashion");
-        hatIndex = new ResourceLocation(tag.getString("hat"));
-        bodyIndex = new ResourceLocation(tag.getString("body"));
-        legsIndex = new ResourceLocation(tag.getString("legs"));
-        bootsIndex = new ResourceLocation(tag.getString("boots"));
-        weaponIndex = new ResourceLocation(tag.getString("weapon"));
-        shieldIndex = new ResourceLocation(tag.getString("shield"));
-
-        keepLayersNames.clear();
-
-        if (tag.contains("size")) {
-            int size = tag.getInt("size");
-            for (int i = 0; i < size; i++) {
-                String name = tag.getString("keep_" + i);
-
-                keepLayersNames.add(name);
-                Fashion.log.debug(name + " got loaded as active");
-            }
-        }
-    }
-
-    /**
-     * Switch on wether or not to render fashion
-     */
-    public boolean shouldRenderFashion() {
-
-        return renderFashion;
-    }
-
-    public void setRenderFashion(boolean renderFashion) {
-
-        this.renderFashion = renderFashion;
-    }
-
-    /**
-     * Inverts the shouldRenderFashion boolean
-     */
-    public void toggleRenderFashion() {
-
-        this.renderFashion = !renderFashion;
-    }
-
-    /**
-     * Returns the index at which the player renders fashion at the given moment for
-     * the given fashion slot enum
-     */
-    public ResourceLocation getRenderingPart(EnumFashionSlot slot) {
-
-        // try and get the first value of the needed list.
-        // when using missing fashion as a default, it will not find it on first
-        // iteration when opening a new world,
-        // and you need to press twice to start cycling the fashion
-        ResourceLocation DEFAULT = MISSING_FASHION;
-
-        if (!ResourcePackReader.getListForSlot(slot).isEmpty())
-            if (ResourcePackReader.getListForSlot(slot).get(0) != null)
-                DEFAULT = ResourcePackReader.getListForSlot(slot).get(0);
-
-        // when a resource location is null, it has its name set to minecraft:missing in
-        // packets. We resolve that here, and transform null / missing to default
-        boolean flag = getAllRenderedParts()[slot.ordinal()] != null && getAllRenderedParts()[slot.ordinal()].toString().contains("missing");
-
-
-        return switch (slot) {
-            case HEAD -> hatIndex != null && !flag ? hatIndex : DEFAULT;
-            case CHEST -> bodyIndex != null && !flag ? bodyIndex : DEFAULT;
-            case LEGS -> legsIndex != null && !flag ? legsIndex : DEFAULT;
-            case BOOTS -> bootsIndex != null && !flag ? bootsIndex : DEFAULT;
-            case WEAPON -> weaponIndex != null && !flag ? weaponIndex : DEFAULT;
-            case SHIELD -> shieldIndex != null && !flag ? shieldIndex : DEFAULT;
-        };
-    }
-
-    /**
-     * Returns the index for all fashion parts currently rendered on the player.
-     * This is mainly used in saving data and passing data trough packets
-     */
-    public ResourceLocation[] getAllRenderedParts() {
-
-        return new ResourceLocation[]{hatIndex, bodyIndex, legsIndex, bootsIndex, weaponIndex, shieldIndex};
-    }
-
-    /**
-     * Change the index for the given fashion slot to a new index
-     */
-    public void updateFashionSlot(ResourceLocation partName, EnumFashionSlot slot) {
-        switch (slot) {
-            case HEAD -> hatIndex = partName;
-            case CHEST -> bodyIndex = partName;
-            case LEGS -> legsIndex = partName;
-            case BOOTS -> bootsIndex = partName;
-            case WEAPON -> weaponIndex = partName;
-            case SHIELD -> shieldIndex = partName;
-        }
-    }
-
-    /**
-     * Whether the player should be rendered with the wardrobe layer or not
-     */
-    public boolean isInWardrobe() {
-
-        return inWardrobe;
-    }
-
-    /**
-     * Set whether the player should be rendered in the wardrobe
-     */
-    public void setInWardrobe(boolean inWardrobe) {
-
-        this.inWardrobe = inWardrobe;
-    }
-
-    @Override
-    public void readFromNbt(CompoundTag tag) {
-        readData(tag);
-    }
-
-    @Override
-    public void writeToNbt(CompoundTag tag) {
-        writeData(tag);
     }
 }

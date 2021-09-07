@@ -2,7 +2,6 @@ package subaraki.fashion.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
@@ -13,11 +12,10 @@ public class FancyButton extends Button {
     private boolean isActive;
 
     /**
-     * Constructor with default empty name. used mainly for the toggler of viewing
+     * Constructor with default empty name. Used mainly for the toggles of viewing
      * fashion
      */
     public FancyButton(int x, int y, OnPress press) {
-
         super(x, y, 8, 8, new TextComponent("_"), press);
         name = "_";
     }
@@ -27,7 +25,6 @@ public class FancyButton extends Button {
      * hover over purposes.
      */
     public FancyButton(int x, int y, String name, OnPress press) {
-
         this(x, y, press);
         this.name = name;
     }
@@ -37,15 +34,11 @@ public class FancyButton extends Button {
      * name
      */
     public boolean isSwitch() {
-
         return name.equals("_");
     }
 
     @Override
     public void renderButton(PoseStack mat, int mouseX, int mouseY, float particleTicks) {
-
-        Minecraft mc = Minecraft.getInstance();
-
         if (this.visible) {
             // this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x +
             // this.width / 2 && mouseY < this.y + this.height / 2;
@@ -60,28 +53,26 @@ public class FancyButton extends Button {
     }
 
     /**
-     * Wether or not this button has been toggled
+     * Whether this button has been toggled
      */
+    @Override
     public boolean isActive() {
-
         return isActive;
     }
 
     /**
-     * Wether to set this button toggled on or off. It is adviced to use
+     * Whether to set this button toggled on or off. It is advised to use
      * {@link #toggle() toggle} instead
      */
     public FancyButton setActive(boolean flag) {
-
         isActive = flag;
         return this;
     }
 
     /**
-     * Switch the state of this button to it's inverse.
+     * Switch the state of this button to its inverse.
      */
     public void toggle() {
-
         this.isActive = !isActive;
     }
 }
