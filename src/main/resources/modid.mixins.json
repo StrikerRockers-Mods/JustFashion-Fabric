@@ -2,13 +2,20 @@
   "required": true,
   "minVersion": "0.8",
   "package": "subaraki.fashion.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
   ],
   "client": [
-    "EntityRenderDispatcherMixin", "ItemInHandRendererMixin", "LayerDefinitionsMixin", "MinecraftClientMixin",
-    "ModelBakeryMixin", "PlayerRendererMixin", "accessor.EntityRenderDispatcherAccessor",
-    "accessor.LivingEntityRendererAccessor", "accessor.ModelManagerAccessor", "accessor.ScreenAccessor"
+    "EntityRenderDispatcherMixin",
+    "ItemInHandRendererMixin",
+    "LayerDefinitionsMixin",
+    "MinecraftClientMixin",
+    "ModelBakeryMixin",
+    "PlayerRendererMixin",
+    "accessor.EntityRenderDispatcherAccessor",
+    "accessor.LivingEntityRendererAccessor",
+    "accessor.ModelManagerAccessor",
+    "accessor.ScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

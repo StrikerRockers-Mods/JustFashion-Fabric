@@ -132,9 +132,7 @@ public class LayerAestheticHeldItem extends RenderLayer<AbstractClientPlayer, Pl
                         mat.translate(0.0625f * -5, 0.0, 0.0625f * -13);
                     else
                         mat.translate(0.0625f * 8, -0.0625f * 8, -0.0625f * 6);
-
                 }
-
                 break;
             default:
                 break;
@@ -147,7 +145,7 @@ public class LayerAestheticHeldItem extends RenderLayer<AbstractClientPlayer, Pl
 
         ModelManager modelManager = Minecraft.getInstance().getModelManager();
         BakedModel modelBuffer = ((ModelManagerAccessor) modelManager).getBakedRegistry().getOrDefault(resLoc, ((ModelManagerAccessor) modelManager).getMissingModel());
-        //TODO fix shield model rotation
+            //TODO fix shield model rotation ForgeHooksClient.handleCameraTransforms(mat, modelBuffer, cam, flag);
         renderModel(modelBuffer, buffer, getRenderType(), mat, packedLightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         mat.popPose();
     }

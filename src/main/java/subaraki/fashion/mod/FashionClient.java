@@ -54,8 +54,8 @@ public class FashionClient implements ClientModInitializer {
             if (body == null) {
                 body = new PlayerModel<AbstractClientPlayer>(Minecraft.getInstance().getEntityModels().bakeLayer(FashionModels.NORMAL_MODEL_LOCATION), false);
                 body.setAllVisible(false);
-                // body.rightArm.visible = true;
-                // body.rightSleeve.visible = true;
+                body.rightArm.visible = true;
+                body.rightSleeve.visible = true;
             }
 
             ResourceLocation resLoc = fashionData.getRenderingPart(EnumFashionSlot.CHEST);
@@ -94,7 +94,6 @@ public class FashionClient implements ClientModInitializer {
             } else {
                 poseStack.translate(-0.0625f, -0.0625 * (16f + 12.5f), -0.0625f / 2f);
                 poseStack.mulPose(Vector3f.ZP.rotationDegrees(-6.25f));
-
             }
 
             var s = 0.0625f * (16f + 16f);

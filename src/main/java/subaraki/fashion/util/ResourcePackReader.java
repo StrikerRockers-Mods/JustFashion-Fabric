@@ -77,7 +77,7 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
                 break; // break out of loop. index saved is the next one.
             index++;
         }
-        if (index > 0) // if the id is smaller then the size of the array, we can get the next item
+        if (index > 0) // if the id is smaller than the size of the array, we can get the next item
             return resLocs.get(--index);
         else
             return resLocs.get(resLocs.size() - 1); // if the id is equal or bigger then the size (equal is more anyway) we need to
@@ -85,7 +85,6 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
     }
 
     public static List<ResourceLocation> getListForSlot(EnumFashionSlot slot) {
-
         return switch (slot) {
             case HEAD -> hats;
             case CHEST -> body;
@@ -96,25 +95,11 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
         };
     }
 
-    private static List<ResourceLocation> toArrayList(EnumFashionSlot slot) {
-
-        List<ResourceLocation> resLoc = Lists.newArrayList();
-
-        switch (slot) {
-            case WEAPON -> resLoc.addAll(weapons);
-            case SHIELD -> resLoc.addAll(shields);
-        }
-
-        return resLoc;
-    }
-
     public static int getWeaponSize() {
-
         return weapons.size();
     }
 
     public static int getShieldSize() {
-
         return shields.size();
     }
 
@@ -343,16 +328,12 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
             String path = pack + "/weapons/";
             for (JsonElement el : array) {
                 String name = el.getAsString();
-
-                boolean isItem = name.contains("item/");
                 name = name.replace("item/", "");
 
-                String fullpath = path + name;
-                ResourceLocation resLoc = new ResourceLocation(Fashion.MODID, fullpath);
+                String fullPath = path + name;
+                ResourceLocation resLoc = new ResourceLocation(Fashion.MODID, fullPath);
 
                 addWeaponModel(resLoc);
-                if (isItem)
-                    addWeaponItem(resLoc);
             }
         }
 

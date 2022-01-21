@@ -24,6 +24,6 @@ public class MinecraftClientMixin {
          * We aren't using the below as it is too late for model registration.
          * <code> ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(ResourcePackReader.INSTANCE); </code>
          */
-        resourceManager.registerReloadListener(new ResourcePackReader());
+        resourceManager.registerReloadListener(ResourcePackReader.INSTANCE);
     }
 }
