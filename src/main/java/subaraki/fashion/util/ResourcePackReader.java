@@ -136,10 +136,9 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
     }
 
     public void addWeaponItem(ResourceLocation model) {
-
         if (model != null) {
             items.add(model);
-            Fashion.log.debug("added " + model + " for item rendering");
+            Fashion.LOGGER.debug("added " + model + " for item rendering");
         }
     }
 
@@ -147,14 +146,14 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
 
         if (model == null) {
             weapons.add(null);
-            Fashion.log.warn(String.format(
+            Fashion.LOGGER.warn(String.format(
                     "%n TRIED REGISTERING A NULL WEAPON MODEL %n This is normal the first time for empty placeholders. %n If this happens more then once, check your Resource Pack json for any errors!"));
             return;
         }
 
         weapons.add(model);
 
-        Fashion.log.debug("added " + model);
+        Fashion.LOGGER.debug("added " + model);
     }
 
     public void addShieldModel(ResourceLocation model, ResourceLocation modelBlocking) {
@@ -163,7 +162,7 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
             shields.add(null);
             shieldsBlocking.add(null);
 
-            Fashion.log.warn(String.format(
+            Fashion.LOGGER.warn(String.format(
                     "%n TRIED REGISTERING A NULL SHIELD MODEL %n This is normal the first time for empty placeholders. %n If this happens more then once, check your Resource Pack json for any errors!"));
             return;
         }
@@ -173,21 +172,21 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
     }
 
     public void initFashion() {
-        Fashion.log.info("Loading up the Resource Pack Reader");
+        Fashion.LOGGER.info("Loading up the Resource Pack Reader");
 
         hats.clear();
         body.clear();
         legs.clear();
         boots.clear();
 
-        Fashion.log.debug("Cleared all Fashion lists");
+        Fashion.LOGGER.debug("Cleared all Fashion lists");
 
         addHats(new ResourceLocation(Fashion.MODID, "textures/fashion/blank_hat.png"));
         addBody(new ResourceLocation(Fashion.MODID, "textures/fashion/blank_body.png"));
         addLegs(new ResourceLocation(Fashion.MODID, "textures/fashion/blank_pants.png"));
         addBoots(new ResourceLocation(Fashion.MODID, "textures/fashion/blank_boots.png"));
 
-        Fashion.log.info("Added fail safe empty Fashion models");
+        Fashion.LOGGER.info("Added fail safe empty Fashion models");
     }
 
     public void initModels() {
@@ -197,11 +196,11 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
         shields.clear();
         shieldsBlocking.clear();
 
-        Fashion.log.debug("Cleared all Model lists");
+        Fashion.LOGGER.debug("Cleared all Model lists");
         addWeaponModel(new ResourceLocation("missing")); // placeholder for empty spot
         addShieldModel(new ResourceLocation("missing"), new ResourceLocation("missing")); // placeholder for empty spot
 
-        Fashion.log.info("Added fail safe empty Fashion models");
+        Fashion.LOGGER.info("Added fail safe empty Fashion models");
     }
 
     public ArrayList<JsonObject> prepare() {
@@ -211,11 +210,11 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
         try {
             jsonFiles = Minecraft.getInstance().getResourceManager().getResources(new ResourceLocation(Fashion.MODID, "fashionpack.json"));
         } catch (IOException e) {
-            Fashion.log.warn("************************************");
-            Fashion.log.warn("!*!*!*!*!");
-            Fashion.log.warn("Issue Loading fashion packs. skipping whole ordeal. Check your json parsing or report to mod author.");
-            Fashion.log.warn("!*!*!*!*!");
-            Fashion.log.warn("************************************");
+            Fashion.LOGGER.warn("************************************");
+            Fashion.LOGGER.warn("!*!*!*!*!");
+            Fashion.LOGGER.warn("Issue Loading fashion packs. skipping whole ordeal. Check your json parsing or report to mod author.");
+            Fashion.LOGGER.warn("!*!*!*!*!");
+            Fashion.LOGGER.warn("************************************");
             e.printStackTrace();
             return theJsonFiles;
         }
@@ -231,7 +230,7 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
                 if (json.has("pack")) {
                     theJsonFiles.add(json);
                 } else {
-                    Fashion.log.warn(res.getSourceName() + "'s fashion pack did not contain a pack id !");
+                    Fashion.LOGGER.warn(res.getSourceName() + "'s fashion pack did not contain a pack id !");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -248,7 +247,7 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
 
                         String pack = json.get("pack").getAsString();
 
-                        Fashion.log.debug("Reading out Fashion " + pack + " ...");
+                        Fashion.LOGGER.debug("Reading out Fashion " + pack + " ...");
 
                         addHats(get("hats", json, pack));
                         addBody(get("body", json, pack));
@@ -269,8 +268,8 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
 
                     String pack = json.get("pack").getAsString();
 
-                    Fashion.log.debug("Reading out Weapons and Shields" + pack + " ...");
-                    addModelJsons(json, pack);
+                    Fashion.LOGGER.debug("Reading out Weapons and Shields" + pack + " ...");
+                    fillWeaponAndShieldLists(json, pack);
                 }
             }
         }
@@ -282,23 +281,23 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
         //fill lists with resourcelocations pointing to the json location
         applyModels(prepare());
 
-        Fashion.log.debug("Firing Model Registry Event");
+        Fashion.LOGGER.debug("Firing Model Registry Event");
         int size_weapons = ResourcePackReader.getWeaponSize();
         int size_shields = ResourcePackReader.getShieldSize();
 
-        Fashion.log.info("Weapons to load : " + size_weapons);
-        Fashion.log.info("Shields to load : " + size_shields);
+        Fashion.LOGGER.info("Weapons to load : " + size_weapons);
+        Fashion.LOGGER.info("Shields to load : " + size_shields);
 
         List<ResourceLocation> theList = ResourcePackReader.getListForSlot(EnumFashionSlot.WEAPON);
         for (ResourceLocation resLoc : theList) {
 
-            Fashion.log.info(String.format("Weapon Registry %s", resLoc));
+            Fashion.LOGGER.info(String.format("Weapon Registry %s", resLoc));
             Fashion.specialModels.add(resLoc);
         }
 
         theList = ResourcePackReader.getListForSlot(EnumFashionSlot.SHIELD);
         for (ResourceLocation resLoc : theList) {
-            Fashion.log.info(String.format("ShieldRegistry %s", resLoc));
+            Fashion.LOGGER.info(String.format("ShieldRegistry %s", resLoc));
 
             for (int i = 0; i < 2; i++) {
                 boolean blocking = i == 0;
@@ -320,20 +319,20 @@ public class ResourcePackReader extends SimplePreparableReloadListener<ArrayList
         return collection;
     }
 
-    public void addModelJsons(JsonObject json, String pack) {
+    public void fillWeaponAndShieldLists(JsonObject json, String pack) {
         if (json.has("weapon_models")) {
-
             JsonArray array = json.getAsJsonArray("weapon_models");
 
             String path = pack + "/weapons/";
             for (JsonElement el : array) {
                 String name = el.getAsString();
+                boolean isItem = name.contains("item/");
                 name = name.replace("item/", "");
-
                 String fullPath = path + name;
                 ResourceLocation resLoc = new ResourceLocation(Fashion.MODID, fullPath);
-
                 addWeaponModel(resLoc);
+                if (isItem)
+                    addWeaponItem(resLoc);
             }
         }
 

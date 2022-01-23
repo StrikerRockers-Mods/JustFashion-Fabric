@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import org.lwjgl.glfw.GLFW;
 import subaraki.fashion.capability.FashionData;
 import subaraki.fashion.event.RenderInHandCallback;
+import subaraki.fashion.network.ClientBoundPackets;
 import subaraki.fashion.network.ServerBoundPackets;
 import subaraki.fashion.render.EnumFashionSlot;
 import subaraki.fashion.render.FashionModels;
@@ -35,6 +36,7 @@ public class FashionClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ClientBoundPackets.register();
         keyWardrobe = KeyBindingHelper.registerKeyBinding(new KeyMapping("Wardrobe", GLFW.GLFW_KEY_W, "Wardrobe"));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (FashionClient.keyWardrobe.consumeClick()) {
@@ -43,8 +45,9 @@ public class FashionClient implements ClientModInitializer {
                 ServerBoundPackets.syncInWardrobe(true);
             }
         });
-        RenderInHandCallback.EVENT.register((hand, poseStack, buffers, light, partialTicks, interpPitch, swingProgress, equipProgress, stack) -> {
 
+        // Renders chest hand texture
+        RenderInHandCallback.EVENT.register((hand, poseStack, buffers, light, partialTicks, interpPitch, swingProgress, equipProgress, stack) -> {
             Player player = Minecraft.getInstance().player;
 
             if (!stack.isEmpty() || player.isScoping())
@@ -68,7 +71,7 @@ public class FashionClient implements ClientModInitializer {
             boolean handFlag = hand == InteractionHand.MAIN_HAND;
             if (!handFlag)
                 return;
-            HumanoidArm humanoidarm = handFlag ? player.getMainArm() : player.getMainArm().getOpposite();
+            HumanoidArm humanoidarm = player.getMainArm();
             boolean flag = humanoidarm != HumanoidArm.LEFT;
             float f = flag ? 1.0F : -1.0F;
             float f1 = Mth.sqrt(swingProgress);

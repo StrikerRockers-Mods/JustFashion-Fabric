@@ -25,7 +25,6 @@ public class LayerWardrobe extends RenderLayer<AbstractClientPlayer, PlayerModel
     private static final ModelResourceLocation modelLocation = new ModelResourceLocation("fashion:wardrobe");
 
     public LayerWardrobe(PlayerRenderer renderer) {
-
         super(renderer);
     }
 
@@ -47,14 +46,11 @@ public class LayerWardrobe extends RenderLayer<AbstractClientPlayer, PlayerModel
     }
 
     private RenderType getRenderType() {
-
         return RenderType.entitySolid(InventoryMenu.BLOCK_ATLAS);
     }
 
     public void render(BakedModel model, MultiBufferSource bufferIn, RenderType rt, PoseStack matrixStackIn, int packedLightIn, int overlay, int color) {
-
         Random rand = new Random(42);
-
         float a = ((color >> 24) & 0xFF) / 255.0f;
         float r = ((color >> 16) & 0xFF) / 255.0f;
         float g = ((color >> 8) & 0xFF) / 255.0f;

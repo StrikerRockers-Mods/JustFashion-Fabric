@@ -60,12 +60,12 @@ public class FashionModels {
     public static MeshDefinition createLegs(CubeDeformation cubeDeformation) {
         MeshDefinition var2 = HumanoidModel.createMesh(cubeDeformation, 0.0F);
         PartDefinition var3 = var2.getRoot();
-        var3.addOrReplaceChild("body", CubeListBuilder.create().texOffs(32, 00).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, cubeDeformation), PartPose.offset(0.0F, 0.0F, 0.0F));
+        var3.addOrReplaceChild("body", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, cubeDeformation), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        var3.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(00, 00).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, cubeDeformation), PartPose.offset(1.9F, 12.0F, 0.0F));
-        var3.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(16, 00).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, cubeDeformation), PartPose.offset(-1.9F, 12.0F, 0.0F));
+        var3.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, cubeDeformation), PartPose.offset(1.9F, 12.0F, 0.0F));
+        var3.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(16, 0).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, cubeDeformation), PartPose.offset(-1.9F, 12.0F, 0.0F));
         var3.addOrReplaceChild("left_pants", CubeListBuilder.create().texOffs(16, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, cubeDeformation.extend(0.25F)), PartPose.offset(1.9F, 12.0F, 0.0F));
-        var3.addOrReplaceChild("right_pants", CubeListBuilder.create().texOffs(00, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, cubeDeformation.extend(0.25F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
+        var3.addOrReplaceChild("right_pants", CubeListBuilder.create().texOffs(0, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, cubeDeformation.extend(0.25F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
 
         //keep in so player model can find these and not crash the game
         var3.addOrReplaceChild("ear", CubeListBuilder.create().texOffs(0, 0).addBox(0, 0, 0, 0, 0, 0, cubeDeformation), PartPose.ZERO);

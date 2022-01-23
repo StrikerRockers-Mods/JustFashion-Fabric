@@ -54,7 +54,7 @@ public class FashionData implements ComponentV3, AutoSyncedComponent {
 
     public void checkResourceReloadAndReset(PlayerRenderer playerRenderer) {
         if (cachedPreviousPlayerRenderer != playerRenderer) {
-            Fashion.log.info("Fashion has reset layers to accommodate reloaded player renderer");
+            Fashion.LOGGER.info("Fashion has reset layers to accommodate reloaded player renderer");
             cachedPreviousPlayerRenderer = playerRenderer;
             resetLayerCache();
         }
@@ -269,7 +269,7 @@ public class FashionData implements ComponentV3, AutoSyncedComponent {
                 String name = tag.getString("keep_" + i);
 
                 keepLayersNames.add(name);
-                Fashion.log.debug(name + " got loaded as active");
+                Fashion.LOGGER.debug(name + " got loaded as active");
             }
         }
     }
@@ -305,7 +305,7 @@ public class FashionData implements ComponentV3, AutoSyncedComponent {
             tag.putInt("size", keepLayersNames.size());
             for (int i = 0; i < keepLayersNames.size(); i++) {
                 tag.putString("keep_" + i, keepLayersNames.get(i));
-                Fashion.log.debug("added a layer to save : " + keepLayersNames.get(i) + " " + i);
+                Fashion.LOGGER.debug("added a layer to save : " + keepLayersNames.get(i) + " " + i);
             }
         }
     }

@@ -102,12 +102,12 @@ public class LayerAestheticHeldItem extends RenderLayer<AbstractClientPlayer, Pl
 
         mat.pushPose();
         ResourceLocation resLoc = data.getRenderingPart(slot);
-        boolean flag = hand == HumanoidArm.LEFT;
+        boolean isLeft = hand == HumanoidArm.LEFT;
 
         this.getParentModel().translateToHand(hand, mat);
         mat.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
         mat.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-        mat.translate((flag ? -1 : 1) / 16.0F, 0.125D, -0.625D);
+        mat.translate((isLeft ? -1 : 1) / 16.0F, 0.125D, -0.625D);
 
         switch (slot) {
             case WEAPON:
@@ -123,29 +123,29 @@ public class LayerAestheticHeldItem extends RenderLayer<AbstractClientPlayer, Pl
                 if (stack.getUseAnimation().equals(UseAnim.BLOCK) || stack.getItem() instanceof ShieldItem) {
                     boolean isBlocking = player.isUsingItem() && player.getUseItem().equals(stack);
 
-                    if (flag) {
+                    if (isLeft) {
                         if (isBlocking)
                             mat.translate(0.0625f * -10, 0.0625f * -3, 0.0625f * -9);
                         else
                             mat.translate(0.0625f * -8, -0.0625f * 8, -0.0625f * -10);
-                    } else if (isBlocking)
-                        mat.translate(0.0625f * -5, 0.0, 0.0625f * -13);
-                    else
-                        mat.translate(0.0625f * 8, -0.0625f * 8, -0.0625f * 6);
+                    } else {
+                        if (isBlocking)
+                            mat.translate(0.0625f * -5, 0.0, 0.0625f * -13);
+                        else
+                            mat.translate(0.0625f * 8, -0.0625f * 8, -0.0625f * 6);
+                    }
                 }
                 break;
             default:
                 break;
         }
-
         if (stack.getItem() instanceof ShieldItem || stack.getItem().getUseAnimation(stack) == UseAnim.BLOCK) {
             boolean isBlocking = player.isUsingItem() && player.getUseItem() == stack;
             resLoc = ResourcePackReader.getAestheticShield(data.getRenderingPart(slot), isBlocking);
         }
-
         ModelManager modelManager = Minecraft.getInstance().getModelManager();
         BakedModel modelBuffer = ((ModelManagerAccessor) modelManager).getBakedRegistry().getOrDefault(resLoc, ((ModelManagerAccessor) modelManager).getMissingModel());
-            //TODO fix shield model rotation ForgeHooksClient.handleCameraTransforms(mat, modelBuffer, cam, flag);
+        //TODO fix shield model rotation ForgeHooksClient.handleCameraTransforms(mat, modelBuffer, cam, isLeft);
         renderModel(modelBuffer, buffer, getRenderType(), mat, packedLightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         mat.popPose();
     }
